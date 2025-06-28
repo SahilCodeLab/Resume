@@ -51,27 +51,22 @@
     button:hover {
       background: #1f8e4e;
     }
-
     #crop-box {
       max-width: 100%;
       margin: 10px 0;
       text-align: center;
     }
-
     #crop-box img {
       max-width: 100%;
       max-height: 300px;
     }
-
     .crop-btn {
       background-color: #3498db;
       margin-top: 10px;
     }
-
     .crop-btn:hover {
       background-color: #2980b9;
     }
-
     .hidden {
       display: none;
     }
@@ -82,10 +77,10 @@
     <h2>Generate Your Resume</h2>
     <h4>SahilCodeLab</h4>
 
-    <form method="POST" enctype="multipart/form-data">
+    <form method="POST" enctype="multipart/form-data" id="resumeForm">
       <!-- 📷 Upload Image -->
       <label>Upload Your Photo:</label>
-      <input type="file" id="imageInput" accept="image/*">
+      <input type="file" id="imageInput" accept="image/*" name="photo">
 
       <div id="crop-box" class="hidden">
         <img id="imagePreview" alt="Preview" />
@@ -106,8 +101,8 @@
       <textarea name="projects" placeholder="Projects"></textarea>
 
       <label>Select Template:</label>
-      <select name="template" id="templateSelect">
-        <option value="1">Classic</option>
+      <select name="template">
+        <option value="1" selected>Classic</option>
         <option value="2">Modern</option>
       </select>
 
@@ -115,7 +110,7 @@
     </form>
   </div>
 
-  <!-- 📦 Cropper JS -->
+  <!-- 📦 Scripts -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
   <script>
     let cropper;
@@ -123,8 +118,9 @@
     const imagePreview = document.getElementById('imagePreview');
     const cropBox = document.getElementById('crop-box');
     const photoDataInput = document.getElementById('photoData');
-    const templateSelect = document.getElementById('templateSelect');
+    const form = document.getElementById('resumeForm');
 
+    // 📷 On Image Select
     imageInput.addEventListener('change', function (e) {
       const file = e.target.files[0];
       if (!file) return;
@@ -132,7 +128,7 @@
       const url = URL.createObjectURL(file);
       imagePreview.src = url;
       cropBox.classList.remove('hidden');
-      photoDataInput.value = ""; // clear previous crop data
+      photoDataInput.value = ""; // Clear old crop
 
       imagePreview.onload = () => {
         if (cropper) cropper.destroy();
@@ -145,24 +141,42 @@
       };
     });
 
+    // ✂️ Crop and Set Image
     function cropImage() {
-      if (!cropper) return;
+      if (!cropper) return alert("⚠️ Please select an image first.");
 
       const canvas = cropper.getCroppedCanvas({ width: 300, height: 300 });
-      const photoData = canvas.toDataURL('image/png');
-      photoDataInput.value = photoData;
+      const dataURL = canvas.toDataURL("image/png");
 
-      imagePreview.src = photoData;
+      photoDataInput.value = dataURL;
+      imagePreview.src = dataURL;
       cropper.destroy();
       cropper = null;
 
-      // Disable image input to prevent accidental overwrite
-      imageInput.disabled = true;
+      alert("✅ Cropped successfully!");
     }
 
-    // ✅ Prevent template change from affecting cropped image
-    templateSelect.addEventListener('change', function () {
-      // No reset action — keep image as is
+    // 💾 Save form data to localStorage
+    form.addEventListener('input', () => {
+      const formData = new FormData(form);
+      const savedData = {};
+      formData.forEach((value, key) => savedData[key] = value);
+      localStorage.setItem("resumeFormData", JSON.stringify(savedData));
+    });
+
+    // 🔁 Restore on load
+    window.addEventListener("DOMContentLoaded", () => {
+      const saved = localStorage.getItem("resumeFormData");
+      if (!saved) return;
+      const data = JSON.parse(saved);
+      for (const key in data) {
+        if (form[key]) form[key].value = data[key];
+      }
+    });
+
+    // 🧹 Clear storage on submit
+    form.addEventListener("submit", () => {
+      localStorage.removeItem("resumeFormData");
     });
   </script>
 </body>
