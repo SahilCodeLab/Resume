@@ -86,3 +86,33 @@ ul li {
     font-size: 14px;
   }
 }
+
+/* Download Button */
+.download-btn {
+  text-align: center;
+  margin-top: 30px;
+}
+
+.download-btn button {
+  background-color: #27ae60;
+  color: white;
+  border: none;
+  padding: 12px 30px;
+  font-size: 17px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.3s;
+  box-shadow: 0 5px 15px rgba(39, 174, 96, 0.3);
+  display: inline-flex;
+  align-items: center;
+}
+
+.download-btn button i {
+  margin-right: 10px;
+  font-size: 18px;
+}
+
+.download-btn button:hover {
+  background-color: #1f8e4e;
+  transform: translateY(-1px);
+}
