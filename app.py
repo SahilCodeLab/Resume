@@ -10,7 +10,7 @@ app = Flask(__name__)
 UPLOAD_FOLDER = 'static/uploads'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
-# Create folder if not exists
+# Create uploads folder if it doesn't exist
 if not os.path.exists(UPLOAD_FOLDER):
     os.makedirs(UPLOAD_FOLDER)
 
@@ -19,37 +19,35 @@ def index():
     if request.method == 'POST':
         photo_filename = None
 
-        # 🖼️ 1. Cropped base64 image
+        # ✅ Step 1: Check for base64 cropped image
         photo_data = request.form.get('photo_data')
-        if photo_data:
+        if photo_data and "base64" in photo_data:
             try:
                 header, encoded = photo_data.split(",", 1)
                 image_data = base64.b64decode(encoded)
-
-                # Optional size limit (5MB max)
-                # if len(image_data) > 5 * 1024 * 1024:
-                #     return "Image too large!", 400
 
                 timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
                 photo_filename = f"cropped_{timestamp}.png"
                 photo_path = os.path.join(app.config['UPLOAD_FOLDER'], photo_filename)
 
-                # Save using Pillow
+                # Save using PIL
                 image = Image.open(BytesIO(image_data)).convert("RGB")
                 image.save(photo_path, format="PNG")
 
             except Exception as e:
-                print("❌ Base64 decode failed:", e)
+                print("❌ Failed to process base64 image:", e)
 
-        else:
-            # 📁 2. Normal file upload
-            photo = request.files.get('photo')
-            if photo and photo.filename != '':
-                photo_filename = secure_filename(photo.filename)
+        # ✅ Step 2: If no base64, check for uploaded file
+        elif 'photo' in request.files:
+            photo = request.files['photo']
+            if photo and photo.filename:
+                filename = secure_filename(photo.filename)
+                timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
+                photo_filename = f"{timestamp}_{filename}"
                 photo_path = os.path.join(app.config['UPLOAD_FOLDER'], photo_filename)
                 photo.save(photo_path)
 
-        # 📝 Collect form data
+        # ✅ Step 3: Collect form data
         data = {
             "name": request.form.get('name'),
             "email": request.form.get('email'),
@@ -63,7 +61,7 @@ def index():
             "photo": photo_filename
         }
 
-        # 🎨 Template selection
+        # ✅ Step 4: Select resume template
         template_choice = request.form.get('template', '1')
         template_file = f"template{template_choice}.html"
 
