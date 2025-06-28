@@ -5,11 +5,11 @@ from datetime import datetime
 
 app = Flask(__name__)
 
-# Folder to save uploaded photos
+# 📂 Folder to save uploaded or cropped images
 UPLOAD_FOLDER = 'static/uploads'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
-# Make sure the folder exists
+# Create the folder if it doesn't exist
 if not os.path.exists(UPLOAD_FOLDER):
     os.makedirs(UPLOAD_FOLDER)
 
@@ -18,53 +18,52 @@ def index():
     if request.method == 'POST':
         photo_filename = None
 
-        # 🔍 Check if cropped base64 photo is sent
+        # 🔍 1. Check for cropped base64 image
         photo_data = request.form.get('photo_data')
-
         if photo_data:
             try:
-                # Clean base64 header and decode
                 header, encoded = photo_data.split(",", 1)
-                binary_data = base64.b64decode(encoded)
+                image_data = base64.b64decode(encoded)
 
-                # Create unique filename with timestamp
                 timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
                 photo_filename = f"cropped_{timestamp}.png"
                 photo_path = os.path.join(app.config['UPLOAD_FOLDER'], photo_filename)
 
-                with open(photo_path, "wb") as f:
-                    f.write(binary_data)
+                with open(photo_path, 'wb') as f:
+                    f.write(image_data)
 
             except Exception as e:
-                print("Base64 decode error:", e)
+                print("❌ Base64 decode failed:", e)
 
         else:
-            # ✨ Fallback if normal photo file uploaded
+            # 📁 2. If no crop, check for normal file upload
             photo = request.files.get('photo')
             if photo and photo.filename != '':
                 photo_filename = secure_filename(photo.filename)
                 photo_path = os.path.join(app.config['UPLOAD_FOLDER'], photo_filename)
                 photo.save(photo_path)
 
-        # 💾 Form data
+        # 📄 Collect form data
         data = {
-            "name": request.form['name'],
-            "email": request.form['email'],
-            "phone": request.form['phone'],
-            "address": request.form['address'],
-            "about": request.form['about'],
-            "skills": request.form['skills'],
-            "education": request.form['education'],
-            "experience": request.form['experience'],
-            "projects": request.form['projects'],
+            "name": request.form.get('name'),
+            "email": request.form.get('email'),
+            "phone": request.form.get('phone'),
+            "address": request.form.get('address'),
+            "about": request.form.get('about'),
+            "skills": request.form.get('skills'),
+            "education": request.form.get('education'),
+            "experience": request.form.get('experience'),
+            "projects": request.form.get('projects'),
             "photo": photo_filename
         }
 
+        # 🧾 Template Choice
         template_choice = request.form.get('template', '1')
         template_file = f"template{template_choice}.html"
 
         return render_template(template_file, data=data)
 
+    # 📥 GET request - Show form
     return render_template("form.html")
 
 if __name__ == '__main__':
