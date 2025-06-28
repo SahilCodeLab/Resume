@@ -1,79 +1,68 @@
-/* Base Layout */
+/* A4 layout */
 body {
-  font-family: 'Poppins', 'Segoe UI', sans-serif;
-  background: linear-gradient(135deg, #eef2f3, #dfe9f3);
+  font-family: 'Poppins', sans-serif;
+  background: #f5f7fa;
+  padding: 30px;
   margin: 0;
-  padding: 40px;
   color: #333;
-  line-height: 1.6;
 }
 
-/* Resume Container */
 .resume-box {
-  width: 794px; /* A4 width at 96dpi */
-  min-height: 1123px; /* A4 height */
+  width: 794px;           /* A4 width at 96 DPI */
+  min-height: 1123px;     /* A4 height */
+  background: #ffffff;
+  padding: 50px 50px;
   margin: auto;
-  background: rgba(255, 255, 255, 0.95);
   border-radius: 20px;
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1);
-  padding: 60px 60px;
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
   box-sizing: border-box;
   position: relative;
   overflow: hidden;
 }
 
-/* Background Blur Effect */
-.resume-box::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.1));
-  backdrop-filter: blur(10px);
-  z-index: -1;
-  border-radius: 20px;
+/* Profile Photo */
+.profile-photo {
+  text-align: center;
+  margin-bottom: 30px;
 }
 
-/* Header Name */
+.profile-photo img {
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 4px solid #3498db;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+}
+
+/* Headings */
 h1 {
+  font-size: 36px;
   text-align: center;
-  font-size: 42px;
-  font-weight: 700;
-  margin-bottom: 20px;
-  background: linear-gradient(to right, #2980b9, #6dd5fa);
+  background: linear-gradient(135deg, #3498db, #2980b9);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+  margin-bottom: 15px;
 }
 
-/* Section Headings */
 h2 {
   font-size: 22px;
   color: #2980b9;
-  margin-top: 35px;
-  padding-left: 10px;
   border-left: 4px solid #3498db;
-  position: relative;
-}
-
-h2::after {
-  content: '';
-  position: absolute;
-  top: 50%;
-  right: 0;
-  height: 2px;
-  width: 40px;
-  background: #3498db;
-  transform: translateY(-50%);
+  padding-left: 10px;
+  margin-top: 25px;
+  margin-bottom: 10px;
 }
 
 /* Text */
 p {
   font-size: 15px;
+  margin: 8px 0;
   color: #34495e;
-  margin: 6px 0;
 }
 
 ul {
-  padding-left: 22px;
+  padding-left: 25px;
   margin: 0;
 }
 
@@ -81,42 +70,10 @@ ul li {
   font-size: 15px;
   color: #34495e;
   margin-bottom: 6px;
-  position: relative;
 }
 
-ul li::before {
-  content: '•';
-  color: #2980b9;
-  font-size: 18px;
-  position: absolute;
-  left: -16px;
-  top: 50%;
-  transform: translateY(-50%);
-}
-
-/* Section Spacing */
 .section {
   margin-bottom: 25px;
-}
-
-/* Profile Photo */
-.profile-photo {
-  text-align: center;
-  margin-bottom: 25px;
-}
-
-.profile-photo img {
-  width: 140px;
-  height: 140px;
-  object-fit: cover;
-  border-radius: 50%;
-  border: 4px solid #3498db;
-  box-shadow: 0 0 25px rgba(52, 152, 219, 0.3);
-  transition: transform 0.3s ease-in-out;
-}
-
-.profile-photo img:hover {
-  transform: scale(1.08);
 }
 
 /* Download Button */
@@ -126,26 +83,19 @@ ul li::before {
 }
 
 .download-btn button {
-  background: linear-gradient(to right, #3498db, #2980b9);
+  background: linear-gradient(135deg, #3498db, #2980b9);
   color: white;
+  padding: 12px 30px;
   border: none;
-  padding: 14px 40px;
-  font-size: 16px;
-  font-weight: 600;
   border-radius: 30px;
+  font-size: 16px;
   cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 10px 20px rgba(52, 152, 219, 0.3);
-  display: inline-flex;
-  align-items: center;
-}
-
-.download-btn button i {
-  margin-right: 10px;
+  box-shadow: 0 8px 18px rgba(52, 152, 219, 0.3);
+  transition: all 0.3s ease-in-out;
 }
 
 .download-btn button:hover {
-  background: linear-gradient(to right, #2980b9, #3498db);
+  background: linear-gradient(135deg, #2980b9, #3498db);
   transform: translateY(-2px);
 }
 
@@ -153,29 +103,27 @@ ul li::before {
   transform: translateY(1px);
 }
 
-/* Responsive Fixes */
-@media screen and (max-width: 768px) {
+/* Responsive */
+@media screen and (max-width: 800px) {
   .resume-box {
-    padding: 30px 20px;
     width: 100%;
-    min-height: auto;
+    padding: 30px;
   }
 
   h1 {
-    font-size: 30px;
+    font-size: 28px;
   }
 
   h2 {
     font-size: 18px;
   }
 
-  .profile-photo img {
-    width: 100px;
-    height: 100px;
+  p, ul li {
+    font-size: 14px;
   }
 
-  .download-btn button {
-    padding: 10px 25px;
-    font-size: 14px;
+  .profile-photo img {
+    width: 120px;
+    height: 120px;
   }
 }
