@@ -1,3 +1,4 @@
+/* General Styles */
 body {
   font-family: 'Segoe UI', 'Lato', sans-serif;
   background: #ecf0f1;
@@ -7,26 +8,30 @@ body {
 
 .container {
   display: flex;
-  justify-content: center;
+  flex-direction: column;
   align-items: center;
 }
 
+/* Resume Box */
 .resume-box {
   width: 794px; /* A4 width in px at 96dpi */
   min-height: 1123px; /* A4 height */
   background: #ffffff;
   padding: 40px 50px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-  border-radius: 8px;
+  border-radius: 12px;
   box-sizing: border-box;
+  position: relative;
 }
 
+/* Heading Styles */
 h1 {
   font-size: 36px;
   color: #2c3e50;
   margin-bottom: 5px;
   border-bottom: 3px solid #3498db;
   padding-bottom: 5px;
+  text-align: center;
 }
 
 h2 {
@@ -54,23 +59,52 @@ hr {
   border-top: 1px solid #ccc;
 }
 
-button {
+/* Profile Photo */
+.profile-photo {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.profile-photo img {
+  width: 130px;
+  height: 130px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #3498db;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Download Button */
+.download-btn {
+  text-align: center;
   margin-top: 30px;
+}
+
+.download-btn button {
   background-color: #27ae60;
   color: white;
   border: none;
-  padding: 12px 25px;
-  font-size: 16px;
+  padding: 12px 30px;
+  font-size: 17px;
   border-radius: 8px;
   cursor: pointer;
   transition: 0.3s;
+  box-shadow: 0 5px 15px rgba(39, 174, 96, 0.3);
+  display: inline-flex;
+  align-items: center;
 }
 
-button:hover {
+.download-btn button i {
+  margin-right: 10px;
+  font-size: 18px;
+}
+
+.download-btn button:hover {
   background-color: #1f8e4e;
+  transform: translateY(-1px);
 }
 
-/* Mobile responsive tweaks */
+/* Responsive */
 @media screen and (max-width: 800px) {
   .resume-box {
     width: 100%;
@@ -88,5 +122,10 @@ button:hover {
 
   p {
     font-size: 14px;
+  }
+
+  .download-btn button {
+    font-size: 15px;
+    padding: 10px 20px;
   }
 }
