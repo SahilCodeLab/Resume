@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <title>Resume Generator | SahilCodeLab</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css" rel="stylesheet"/>
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
@@ -11,7 +12,6 @@
       padding: 30px;
       margin: 0;
     }
-
     .form-container {
       max-width: 600px;
       background: white;
@@ -20,18 +20,15 @@
       border-radius: 10px;
       box-shadow: 0 10px 25px rgba(0,0,0,0.1);
     }
-
     h2 {
       text-align: center;
       color: #2c3e50;
     }
-
     h4 {
       text-align: center;
       color: #3498db;
       margin-bottom: 30px;
     }
-
     input, textarea, select {
       width: 100%;
       padding: 12px;
@@ -40,7 +37,6 @@
       border-radius: 6px;
       font-size: 14px;
     }
-
     button {
       width: 100%;
       padding: 12px;
@@ -52,9 +48,28 @@
       cursor: pointer;
       transition: 0.3s ease;
     }
-
     button:hover {
       background: #1f8e4e;
+    }
+
+    #crop-box {
+      max-width: 100%;
+      margin: 10px 0;
+      text-align: center;
+    }
+
+    #crop-box img {
+      max-width: 100%;
+      max-height: 300px;
+    }
+
+    .crop-btn {
+      background-color: #3498db;
+      margin-top: 10px;
+    }
+
+    .crop-btn:hover {
+      background-color: #2980b9;
     }
   </style>
 </head>
@@ -64,14 +79,22 @@
     <h4>SahilCodeLab</h4>
 
     <form method="POST" enctype="multipart/form-data">
+      <!-- 📷 Upload Image -->
       <label>Upload Your Photo:</label>
-      <input type="file" name="photo" accept="image/*">
+      <input type="file" id="imageInput" accept="image/*">
 
+      <div id="crop-box">
+        <img id="imagePreview" alt="Preview" />
+      </div>
+
+      <button type="button" class="crop-btn" onclick="cropImage()">Crop & Use Photo</button>
+      <input type="hidden" name="photo_data" id="photoData">
+
+      <!-- 🔽 Other Fields -->
       <input type="text" name="name" placeholder="Full Name" required>
       <input type="email" name="email" placeholder="Email" required>
       <input type="text" name="phone" placeholder="Phone" required>
       <input type="text" name="address" placeholder="Address">
-
       <textarea name="about" placeholder="About You"></textarea>
       <input type="text" name="skills" placeholder="Skills (comma separated)">
       <textarea name="education" placeholder="Education"></textarea>
@@ -87,5 +110,39 @@
       <button type="submit">Generate Resume</button>
     </form>
   </div>
+
+  <!-- 📦 Cropper JS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
+  <script>
+    let cropper;
+
+    const imageInput = document.getElementById('imageInput');
+    const imagePreview = document.getElementById('imagePreview');
+
+    imageInput.addEventListener('change', function (e) {
+      const file = e.target.files[0];
+      const url = URL.createObjectURL(file);
+      imagePreview.src = url;
+
+      imagePreview.onload = () => {
+        if (cropper) cropper.destroy();
+        cropper = new Cropper(imagePreview, {
+          aspectRatio: 1,  // 📏 Square crop
+          viewMode: 1,
+          autoCropArea: 1,
+        });
+      };
+    });
+
+    function cropImage() {
+      const canvas = cropper.getCroppedCanvas({
+        width: 300,
+        height: 300,
+      });
+      const photoData = canvas.toDataURL('image/png');
+      document.getElementById('photoData').value = photoData;
+      alert("✅ Photo cropped and ready!");
+    }
+  </script>
 </body>
 </html>
