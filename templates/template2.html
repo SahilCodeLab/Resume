@@ -69,28 +69,28 @@
   </div>
 
   <!-- Download Script -->
-  <script>
-    function downloadResume() {
-      const resume = document.getElementById("resume-content");
-      const button = document.getElementById("download-btn");
+<script>
+  function downloadResume() {
+    const resume = document.getElementById("resume-content");
+    const button = document.getElementById("download-btn");
 
-      button.style.display = "none";  // Hide button before capture
+    button.style.display = "none";  // Hide button before capture
 
-      html2canvas(resume, {
-        width: 794,
-        height: 1123,
-        scale: 2,
-        useCORS: true
-      }).then(canvas => {
-        let link = document.createElement('a');
-        link.download = 'resume.png';
-        link.href = canvas.toDataURL("image/png");
-        link.click();
+    html2canvas(resume, {
+      scale: 2,                     // High resolution
+      useCORS: true,                // For external images
+      scrollY: -window.scrollY,     // Capture full visible area
+      backgroundColor: null         // Optional: transparent background
+    }).then(canvas => {
+      let link = document.createElement('a');
+      link.download = 'resume.png';
+      link.href = canvas.toDataURL("image/png");
+      link.click();
 
-        button.style.display = "block";  // Show button again
-      });
-    }
-  </script>
+      button.style.display = "block";  // Show button again
+    });
+  }
+</script>
 
 </body>
 </html>
