@@ -12,7 +12,6 @@
       padding: 30px;
       margin: 0;
     }
-
     .form-container {
       max-width: 600px;
       background: white;
@@ -21,17 +20,15 @@
       border-radius: 10px;
       box-shadow: 0 10px 25px rgba(0,0,0,0.1);
     }
-
-    h2, h4 {
+    h2 {
       text-align: center;
       color: #2c3e50;
     }
-
     h4 {
+      text-align: center;
       color: #3498db;
       margin-bottom: 30px;
     }
-
     input, textarea, select {
       width: 100%;
       padding: 12px;
@@ -40,7 +37,6 @@
       border-radius: 6px;
       font-size: 14px;
     }
-
     button {
       width: 100%;
       padding: 12px;
@@ -52,7 +48,6 @@
       cursor: pointer;
       transition: 0.3s ease;
     }
-
     button:hover {
       background: #1f8e4e;
     }
@@ -76,6 +71,10 @@
     .crop-btn:hover {
       background-color: #2980b9;
     }
+
+    .hidden {
+      display: none;
+    }
   </style>
 </head>
 <body>
@@ -86,13 +85,13 @@
     <form method="POST" enctype="multipart/form-data">
       <!-- 📷 Upload Image -->
       <label>Upload Your Photo:</label>
-      <input type="file" id="imageInput" name="photo" accept="image/*">
+      <input type="file" id="imageInput" accept="image/*" name="photo">
 
-      <div id="crop-box">
+      <div id="crop-box" class="hidden">
         <img id="imagePreview" alt="Preview" />
+        <button type="button" class="crop-btn" onclick="cropImage()">Crop & Use Photo</button>
       </div>
 
-      <button type="button" class="crop-btn" onclick="cropImage()">Crop & Use Photo</button>
       <input type="hidden" name="photo_data" id="photoData">
 
       <!-- 🔽 Other Fields -->
@@ -122,12 +121,17 @@
     let cropper;
     const imageInput = document.getElementById('imageInput');
     const imagePreview = document.getElementById('imagePreview');
+    const cropBox = document.getElementById('crop-box');
+    const photoDataInput = document.getElementById('photoData');
 
     imageInput.addEventListener('change', function (e) {
       const file = e.target.files[0];
       if (!file) return;
+
       const url = URL.createObjectURL(file);
       imagePreview.src = url;
+      cropBox.classList.remove('hidden');
+      photoDataInput.value = ""; // Clear previous data
 
       imagePreview.onload = () => {
         if (cropper) cropper.destroy();
@@ -135,19 +139,30 @@
           aspectRatio: 1,
           viewMode: 1,
           autoCropArea: 1,
+          background: false,
         });
       };
     });
 
     function cropImage() {
       if (!cropper) {
-        alert("⚠️ Please select a photo first.");
+        alert("⚠️ Please upload and select an image first.");
         return;
       }
-      const canvas = cropper.getCroppedCanvas({ width: 300, height: 300 });
+
+      const canvas = cropper.getCroppedCanvas({
+        width: 300,
+        height: 300,
+      });
+
       const photoData = canvas.toDataURL('image/png');
-      document.getElementById('photoData').value = photoData;
-      alert("✅ Photo cropped and ready!");
+      photoDataInput.value = photoData;
+
+      imagePreview.src = photoData;
+      cropper.destroy();
+      cropper = null;
+
+      alert("✅ Photo cropped and set! You can re-upload to change.");
     }
   </script>
 </body>
