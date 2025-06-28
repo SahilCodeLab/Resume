@@ -85,7 +85,7 @@
     <form method="POST" enctype="multipart/form-data">
       <!-- 📷 Upload Image -->
       <label>Upload Your Photo:</label>
-      <input type="file" id="imageInput" accept="image/*" name="photo">
+      <input type="file" id="imageInput" accept="image/*">
 
       <div id="crop-box" class="hidden">
         <img id="imagePreview" alt="Preview" />
@@ -106,7 +106,7 @@
       <textarea name="projects" placeholder="Projects"></textarea>
 
       <label>Select Template:</label>
-      <select name="template">
+      <select name="template" id="templateSelect">
         <option value="1">Classic</option>
         <option value="2">Modern</option>
       </select>
@@ -123,6 +123,7 @@
     const imagePreview = document.getElementById('imagePreview');
     const cropBox = document.getElementById('crop-box');
     const photoDataInput = document.getElementById('photoData');
+    const templateSelect = document.getElementById('templateSelect');
 
     imageInput.addEventListener('change', function (e) {
       const file = e.target.files[0];
@@ -131,7 +132,7 @@
       const url = URL.createObjectURL(file);
       imagePreview.src = url;
       cropBox.classList.remove('hidden');
-      photoDataInput.value = ""; // Clear previous data
+      photoDataInput.value = ""; // clear previous crop data
 
       imagePreview.onload = () => {
         if (cropper) cropper.destroy();
@@ -145,16 +146,9 @@
     });
 
     function cropImage() {
-      if (!cropper) {
-        alert("⚠️ Please upload and select an image first.");
-        return;
-      }
+      if (!cropper) return;
 
-      const canvas = cropper.getCroppedCanvas({
-        width: 300,
-        height: 300,
-      });
-
+      const canvas = cropper.getCroppedCanvas({ width: 300, height: 300 });
       const photoData = canvas.toDataURL('image/png');
       photoDataInput.value = photoData;
 
@@ -162,8 +156,14 @@
       cropper.destroy();
       cropper = null;
 
-      alert("✅ Photo cropped and set! You can re-upload to change.");
+      // Disable image input to prevent accidental overwrite
+      imageInput.disabled = true;
     }
+
+    // ✅ Prevent template change from affecting cropped image
+    templateSelect.addEventListener('change', function () {
+      // No reset action — keep image as is
+    });
   </script>
 </body>
 </html>
