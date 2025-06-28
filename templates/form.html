@@ -85,119 +85,114 @@
 </head>
 <body>
 
+<!-- 🔰 Adsterra -->
 <script type="text/javascript">
-	atOptions = {
-		'key' : '83f3fca3ce7965fb94f03a7ee7cd1eb8',
-		'format' : 'iframe',
-		'height' : 90,
-		'width' : 728,
-		'params' : {}
-	};
+  atOptions = {
+    'key' : '83f3fca3ce7965fb94f03a7ee7cd1eb8',
+    'format' : 'iframe',
+    'height' : 90,
+    'width' : 728,
+    'params' : {}
+  };
 </script>
-
 <script type="text/javascript" src="//www.highperformanceformat.com/83f3fca3ce7965fb94f03a7ee7cd1eb8/invoke.js"></script>
-  <div class="form-container">
-    <h2>Generate Your Resume</h2>
-    <h4>SahilCodeLab</h4>
 
-    <form method="POST" enctype="multipart/form-data">
-      <!-- 📷 Upload Photo -->
-      <label>Upload Your Photo:</label>
-      <input type="file" id="imageInput" accept="image/*" name="photo">
+<div class="form-container">
+  <h2>Generate Your Resume</h2>
+  <h4>SahilCodeLab</h4>
 
-      <div id="crop-box" class="hidden">
-        <img id="imagePreview" alt="Preview" />
-        <button type="button" class="crop-btn" onclick="cropImage()">Crop & Use Photo</button>
-      </div>
+  <form method="POST" enctype="multipart/form-data">
+    <!-- 📷 Upload Photo -->
+    <label>Upload Your Photo:</label>
+    <input type="file" id="imageInput" accept="image/*" name="photo">
 
-      <input type="hidden" name="photo_data" id="photoData">
+    <div id="crop-box" class="hidden">
+      <img id="imagePreview" alt="Preview" />
+      <button type="button" class="crop-btn" onclick="cropImage()">Crop & Use Photo</button>
+    </div>
 
-      <!-- 📝 User Fields -->
-      <input type="text" name="name" placeholder="Full Name" required>
-      <input type="email" name="email" placeholder="Email" required>
-      <input type="text" name="phone" placeholder="Phone" required>
-      <input type="text" name="address" placeholder="Address">
-      <textarea name="about" placeholder="About You"></textarea>
-      <input type="text" name="skills" placeholder="Skills (comma separated)">
-      <textarea name="education" placeholder="Education"></textarea>
-      <textarea name="experience" placeholder="Experience"></textarea>
-      <textarea name="projects" placeholder="Projects"></textarea>
+    <input type="hidden" name="photo_data" id="photoData">
 
-      <label>Select Template:</label>
-      <select name="template">
-        <option value="1">Classic</option>
-        <option value="2">Modern</option>
-      <!-- ✅ New -->
-  <option value="3">Creative</option>   <!-- ✅ New -->
-      </select>
+    <!-- 📝 User Fields (with character limits) -->
+    <input type="text" name="name" placeholder="Full Name" required maxlength="50">
+    <input type="email" name="email" placeholder="Email" required maxlength="50">
+    <input type="text" name="phone" placeholder="Phone" required maxlength="15">
+    <input type="text" name="address" placeholder="Address" maxlength="100">
+    
+    <textarea name="about" placeholder="About You (Max 400 characters)" maxlength="400" rows="4"></textarea>
+    <input type="text" name="skills" placeholder="Skills (comma separated)" maxlength="150">
+    <textarea name="education" placeholder="Education (Max 600 characters)" maxlength="600" rows="5"></textarea>
+    <textarea name="experience" placeholder="Experience (Max 600 characters)" maxlength="600" rows="5"></textarea>
+    <textarea name="projects" placeholder="Projects (Max 500 characters)" maxlength="500" rows="5"></textarea>
 
-      <button type="submit">Generate Resume</button>
-    </form>
-  </div>
+    <label>Select Template:</label>
+    <select name="template">
+      <option value="1">Classic</option>
+      <option value="2">Modern</option>
+      <option value="3">Creative</option> <!-- ✅ Added -->
+    </select>
 
-  <!-- 🧩 CropperJS -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
-  <script>
-    let cropper;
-    const imageInput = document.getElementById('imageInput');
-    const imagePreview = document.getElementById('imagePreview');
-    const cropBox = document.getElementById('crop-box');
-    const photoDataInput = document.getElementById('photoData');
+    <button type="submit">Generate Resume</button>
+  </form>
+</div>
 
-    // Load cropped image if exists
-    window.onload = () => {
-      const saved = localStorage.getItem('croppedPhoto');
-      if (saved) {
-        imagePreview.src = saved;
-        cropBox.classList.remove('hidden');
-        photoDataInput.value = saved;
-      }
-    };
+<!-- 🧩 CropperJS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
+<script>
+  let cropper;
+  const imageInput = document.getElementById('imageInput');
+  const imagePreview = document.getElementById('imagePreview');
+  const cropBox = document.getElementById('crop-box');
+  const photoDataInput = document.getElementById('photoData');
 
-    imageInput.addEventListener('change', function (e) {
-      const file = e.target.files[0];
-      if (!file) return;
-
-      const url = URL.createObjectURL(file);
-      imagePreview.src = url;
+  window.onload = () => {
+    const saved = localStorage.getItem('croppedPhoto');
+    if (saved) {
+      imagePreview.src = saved;
       cropBox.classList.remove('hidden');
-      photoDataInput.value = ""; // Clear old
-
-      localStorage.removeItem('croppedPhoto');
-
-      imagePreview.onload = () => {
-        if (cropper) cropper.destroy();
-        cropper = new Cropper(imagePreview, {
-          aspectRatio: 1,
-          viewMode: 1,
-          autoCropArea: 1,
-          background: false,
-        });
-      };
-    });
-
-    function cropImage() {
-      if (!cropper) {
-        alert("⚠️ Please upload and select an image first.");
-        return;
-      }
-
-      const canvas = cropper.getCroppedCanvas({
-        width: 300,
-        height: 300,
-      });
-
-      const photoData = canvas.toDataURL('image/png');
-      photoDataInput.value = photoData;
-      localStorage.setItem('croppedPhoto', photoData);
-
-      imagePreview.src = photoData;
-      cropBox.classList.add('hidden');
-      cropper.destroy();
-      cropper = null;
-
-      alert("✅ Photo cropped and set!");
+      photoDataInput.value = saved;
     }
-  </script>
+  };
+
+  imageInput.addEventListener('change', function (e) {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const url = URL.createObjectURL(file);
+    imagePreview.src = url;
+    cropBox.classList.remove('hidden');
+    photoDataInput.value = "";
+    localStorage.removeItem('croppedPhoto');
+
+    imagePreview.onload = () => {
+      if (cropper) cropper.destroy();
+      cropper = new Cropper(imagePreview, {
+        aspectRatio: 1,
+        viewMode: 1,
+        autoCropArea: 1,
+        background: false,
+      });
+    };
+  });
+
+  function cropImage() {
+    if (!cropper) {
+      alert("⚠️ Please upload and select an image first.");
+      return;
+    }
+
+    const canvas = cropper.getCroppedCanvas({ width: 300, height: 300 });
+    const photoData = canvas.toDataURL('image/png');
+    photoDataInput.value = photoData;
+    localStorage.setItem('croppedPhoto', photoData);
+
+    imagePreview.src = photoData;
+    cropBox.classList.add('hidden');
+    cropper.destroy();
+    cropper = null;
+
+    alert("✅ Photo cropped and set!");
+  }
+</script>
 </body>
 </html>
