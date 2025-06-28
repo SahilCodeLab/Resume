@@ -7,9 +7,11 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
 <body>
+
+  <!-- A4 Sized Resume Box -->
   <div class="resume-box" id="resume-content">
 
-    <!-- Optional Profile Image -->
+    <!-- Profile Image -->
     {% if data.photo %}
     <div class="profile-photo">
       <img src="{{ url_for('static', filename='uploads/' + data.photo) }}" alt="Profile Photo">
@@ -21,7 +23,6 @@
     <p><strong>Email:</strong> {{ data.email }}</p>
     <p><strong>Phone:</strong> {{ data.phone }}</p>
     <p><strong>Address:</strong> {{ data.address }}</p>
-
     <hr>
 
     <!-- About Me -->
@@ -60,7 +61,7 @@
 
   </div>
 
-  <!-- Download Button Outside the Resume Box -->
+  <!-- Download Button (Outside) -->
   <div class="download-btn" id="download-btn">
     <button onclick="downloadResume()">
       <i class="fas fa-download"></i> Download as Image
@@ -73,7 +74,7 @@
       const resume = document.getElementById("resume-content");
       const button = document.getElementById("download-btn");
 
-      button.style.display = "none";  // Hide before capture
+      button.style.display = "none";  // Hide button before capture
 
       html2canvas(resume, {
         width: 794,
@@ -86,9 +87,10 @@
         link.href = canvas.toDataURL("image/png");
         link.click();
 
-        button.style.display = "block"; // Show again
+        button.style.display = "block";  // Show button again
       });
     }
   </script>
+
 </body>
 </html>
