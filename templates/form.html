@@ -1,161 +1,117 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html><html lang="en">
 <head>
   <meta charset="UTF-8">
   <title>Resume Generator | SahilCodeLab</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css" rel="stylesheet"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
+    * {
+      box-sizing: border-box;
+    }
     body {
       font-family: 'Segoe UI', sans-serif;
       background: #f4f4f4;
-      padding: 20px;
+      padding: 30px;
       margin: 0;
     }
-
     .form-container {
-      max-width: 600px;
+      max-width: 700px;
       background: white;
       margin: auto;
-      padding: 30px;
+      padding: 40px;
       border-radius: 10px;
       box-shadow: 0 10px 25px rgba(0,0,0,0.1);
     }
-
-    h2 {
+    h2, h4 {
       text-align: center;
-      color: #2c3e50;
     }
-
-    h4 {
-      text-align: center;
-      color: #3498db;
-      margin-bottom: 20px;
-    }
-
-    input, textarea, select {
+    h2 { color: #2c3e50; }
+    h4 { color: #3498db; margin-bottom: 30px; }
+    input, textarea, select, button {
       width: 100%;
       padding: 12px;
-      margin: 8px 0;
+      margin: 10px 0;
       border: 1px solid #ccc;
       border-radius: 6px;
       font-size: 14px;
-      box-sizing: border-box;
     }
-
     button {
-      width: 100%;
-      padding: 12px;
       background: #27ae60;
       color: white;
       border: none;
-      border-radius: 6px;
-      font-size: 16px;
       cursor: pointer;
       transition: 0.3s ease;
     }
-
     button:hover {
       background: #1f8e4e;
     }
-
-    /* 📌 FIXED IMAGE AREA */
     #crop-box {
-      width: 100%;
-      height: 300px;
-      overflow: hidden;
+      max-width: 100%;
+      margin: 10px 0;
       text-align: center;
-      margin-bottom: 10px;
-      display: none; /* Hidden until image selected */
     }
-
     #crop-box img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-      margin: auto;
+      max-width: 100%;
+      max-height: 300px;
     }
-
     .crop-btn {
       background-color: #3498db;
-      margin: 10px 0;
+      margin-top: 10px;
+      color: white;
     }
-
     .crop-btn:hover {
       background-color: #2980b9;
     }
-
+    .hidden {
+      display: none;
+    }
     @media (max-width: 768px) {
       .form-container {
         padding: 20px;
       }
-    }
-
-    @media (max-width: 480px) {
-      #crop-box {
-        height: 250px;
+      input, textarea, select, button {
+        font-size: 16px;
       }
     }
   </style>
 </head>
 <body>
-
-  <!-- ✅ Adsterra Banner TOP (Commit: ADSTERA BANNER ADDED) -->
-  <div style="text-align:center; margin-bottom: 20px;">
-    <script type="text/javascript">
-      atOptions = {
-        'key' : '83f3fca3ce7965fb94f03a7ee7cd1eb8',
-        'format' : 'iframe',
-        'height' : 90,
-        'width' : 728,
-        'params' : {}
-      };
-    </script>
-    <script type="text/javascript" src="//www.highperformanceformat.com/83f3fca3ce7965fb94f03a7ee7cd1eb8/invoke.js"></script>
-  </div>
-
   <div class="form-container">
     <h2>Generate Your Resume</h2>
-    <h4>SahilCodeLab</h4>
+    <h4>SahilCodeLab</h4><form method="POST" enctype="multipart/form-data">
+  <!-- 📷 Upload Image -->
+  <label>Upload Your Photo:</label>
+  <input type="file" id="imageInput" accept="image/*" name="photo">
 
-    <form method="POST" enctype="multipart/form-data">
-      <!-- 📷 Upload Image -->
-      <label>Upload Your Photo:</label>
-      <input type="file" id="imageInput" accept="image/*" name="photo" required>
-
-      <div id="crop-box">
-        <img id="imagePreview" alt="Preview" />
-      </div>
-
-      <button type="button" class="crop-btn" onclick="cropImage()">Crop & Use Photo</button>
-      <input type="hidden" name="photo_data" id="photoData">
-
-      <!-- 👇 Other Fields -->
-      <input type="text" name="name" placeholder="Full Name" required>
-      <input type="email" name="email" placeholder="Email" required>
-      <input type="text" name="phone" placeholder="Phone" required>
-      <input type="text" name="address" placeholder="Address">
-      <textarea name="about" placeholder="About You"></textarea>
-      <input type="text" name="skills" placeholder="Skills (comma separated)">
-      <textarea name="education" placeholder="Education"></textarea>
-      <textarea name="experience" placeholder="Experience"></textarea>
-      <textarea name="projects" placeholder="Projects"></textarea>
-
-      <label>Select Template:</label>
-      <select name="template" required>
-        <option value="1">Classic</option>
-        <option value="2">Modern</option>
-      </select>
-
-      <button type="submit">Generate Resume</button>
-    </form>
+  <div id="crop-box" class="hidden">
+    <img id="imagePreview" alt="Preview" />
+    <button type="button" class="crop-btn" onclick="cropImage()">Crop & Use Photo</button>
   </div>
 
-  <!-- 📦 Cropper JS -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
-  <script>
+  <input type="hidden" name="photo_data" id="photoData">
+
+  <!-- 🔽 Other Fields -->
+  <input type="text" name="name" placeholder="Full Name" required>
+  <input type="email" name="email" placeholder="Email" required>
+  <input type="text" name="phone" placeholder="Phone" required>
+  <input type="text" name="address" placeholder="Address">
+  <textarea name="about" placeholder="About You"></textarea>
+  <input type="text" name="skills" placeholder="Skills (comma separated)">
+  <textarea name="education" placeholder="Education"></textarea>
+  <textarea name="experience" placeholder="Experience"></textarea>
+  <textarea name="projects" placeholder="Projects"></textarea>
+
+  <label>Select Template:</label>
+  <select name="template">
+    <option value="1">Classic</option>
+    <option value="2">Modern</option>
+  </select>
+
+  <button type="submit">Generate Resume</button>
+</form>
+
+  </div>  <!-- 📦 Cropper JS -->  <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>  <script>
     let cropper;
     const imageInput = document.getElementById('imageInput');
     const imagePreview = document.getElementById('imagePreview');
@@ -168,7 +124,7 @@
 
       const url = URL.createObjectURL(file);
       imagePreview.src = url;
-      cropBox.style.display = 'block';
+      cropBox.classList.remove('hidden');
       photoDataInput.value = "";
 
       imagePreview.onload = () => {
@@ -177,28 +133,31 @@
           aspectRatio: 1,
           viewMode: 1,
           autoCropArea: 1,
-          background: false
+          background: false,
         });
       };
     });
 
     function cropImage() {
       if (!cropper) {
-        alert("⚠️ Please select an image first.");
+        alert("⚠️ Please upload and select an image first.");
         return;
       }
 
-      const canvas = cropper.getCroppedCanvas({ width: 300, height: 300 });
+      const canvas = cropper.getCroppedCanvas({
+        width: 300,
+        height: 300,
+      });
+
       const photoData = canvas.toDataURL('image/png');
       photoDataInput.value = photoData;
 
       imagePreview.src = photoData;
       cropper.destroy();
       cropper = null;
-      cropBox.style.display = 'none';  // ✅ Hide after crop
+      cropBox.classList.add('hidden');
 
-      alert("✅ Image cropped and ready!");
+      alert("✅ Photo cropped and set! You can re-upload to change.");
     }
-  </script>
-</body>
+  </script></body>
 </html>
