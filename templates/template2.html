@@ -80,5 +80,23 @@
       });
     }
   </script>
+
+<script>
+  function downloadResume() {
+    const resume = document.getElementById("resume-content");
+    const button = document.querySelector(".download-btn");
+
+    button.style.display = "none";  // Hide before download
+
+    html2canvas(resume).then(canvas => {
+      let link = document.createElement('a');
+      link.download = 'resume.png';
+      link.href = canvas.toDataURL();
+      link.click();
+
+      button.style.display = "block";  // Show after download
+    });
+  }
+</script>
 </body>
 </html>
