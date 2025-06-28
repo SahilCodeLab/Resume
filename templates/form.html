@@ -61,11 +61,14 @@
     #crop-box img {
       max-width: 100%;
       max-height: 300px;
+      display: none;
+      border-radius: 10px;
     }
 
     .crop-btn {
       background-color: #3498db;
       margin-top: 10px;
+      display: none;
     }
 
     .crop-btn:hover {
@@ -81,16 +84,16 @@
     <form method="POST" enctype="multipart/form-data">
       <!-- 📷 Upload Image -->
       <label>Upload Your Photo:</label>
-      <input type="file" id="imageInput" accept="image/*">
+      <input type="file" id="imageInput" accept="image/*" required>
 
       <div id="crop-box">
         <img id="imagePreview" alt="Preview" />
       </div>
 
-      <button type="button" class="crop-btn" onclick="cropImage()">Crop & Use Photo</button>
+      <button type="button" class="crop-btn" id="cropButton" onclick="cropImage()">Crop & Use Photo</button>
       <input type="hidden" name="photo_data" id="photoData">
 
-      <!-- 🔽 Other Fields -->
+      <!-- Other Fields -->
       <input type="text" name="name" placeholder="Full Name" required>
       <input type="email" name="email" placeholder="Email" required>
       <input type="text" name="phone" placeholder="Phone" required>
@@ -111,23 +114,28 @@
     </form>
   </div>
 
-  <!-- 📦 Cropper JS -->
+  <!-- CropperJS -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
   <script>
     let cropper;
 
     const imageInput = document.getElementById('imageInput');
     const imagePreview = document.getElementById('imagePreview');
+    const cropBtn = document.getElementById('cropButton');
 
     imageInput.addEventListener('change', function (e) {
       const file = e.target.files[0];
+      if (!file) return;
+
       const url = URL.createObjectURL(file);
       imagePreview.src = url;
+      imagePreview.style.display = 'block';
+      cropBtn.style.display = 'inline-block';
 
       imagePreview.onload = () => {
         if (cropper) cropper.destroy();
         cropper = new Cropper(imagePreview, {
-          aspectRatio: 1,  // 📏 Square crop
+          aspectRatio: 1,
           viewMode: 1,
           autoCropArea: 1,
         });
@@ -141,7 +149,8 @@
       });
       const photoData = canvas.toDataURL('image/png');
       document.getElementById('photoData').value = photoData;
-      alert("✅ Photo cropped and ready!");
+
+      alert("✅ Photo cropped and added!");
     }
   </script>
 </body>
