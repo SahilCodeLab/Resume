@@ -1,66 +1,54 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Resume Generator | SahilCodeLab</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css" rel="stylesheet"/>
+  <link href="{{ url_for('static', filename='style.css') }}" rel="stylesheet" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css" rel="stylesheet" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
-    * {
-      box-sizing: border-box;
-      padding: 0;
-      margin: 0;
-    }
-
     body {
       font-family: 'Segoe UI', sans-serif;
       background: #f4f4f4;
       padding: 20px;
+      margin: 0;
     }
 
     .form-container {
-      max-width: 800px;
-      width: 100%;
+      max-width: 600px;
       background: white;
-      margin: 40px auto;
-      padding: 40px;
-      border-radius: 12px;
+      margin: auto;
+      padding: 30px;
+      border-radius: 10px;
       box-shadow: 0 10px 25px rgba(0,0,0,0.1);
     }
 
-    h2 {
+    h2, h4 {
       text-align: center;
-      color: #2c3e50;
-      font-size: 26px;
       margin-bottom: 10px;
     }
 
     h4 {
-      text-align: center;
       color: #3498db;
       margin-bottom: 30px;
-      font-size: 18px;
     }
 
-    input, textarea, select {
+    input, textarea, select, button {
       width: 100%;
-      padding: 14px;
-      margin: 12px 0;
+      padding: 12px;
+      margin: 10px 0;
       border: 1px solid #ccc;
       border-radius: 6px;
-      font-size: 15px;
+      font-size: 14px;
     }
 
     button {
-      width: 100%;
-      padding: 14px;
       background: #27ae60;
       color: white;
-      border: none;
-      border-radius: 6px;
       font-size: 16px;
       cursor: pointer;
-      transition: background 0.3s ease;
+      transition: 0.3s ease;
+      border: none;
     }
 
     button:hover {
@@ -68,9 +56,8 @@
     }
 
     #crop-box {
-      max-width: 100%;
-      margin: 10px 0;
       text-align: center;
+      margin: 10px 0;
     }
 
     #crop-box img {
@@ -92,38 +79,9 @@
       display: none;
     }
 
-    @media (max-width: 768px) {
+    @media screen and (max-width: 768px) {
       .form-container {
         padding: 20px;
-        margin: 20px 10px;
-      }
-
-      h2 {
-        font-size: 22px;
-      }
-
-      input, textarea, select, button {
-        font-size: 14px;
-        padding: 12px;
-      }
-    }
-
-    @media (max-width: 480px) {
-      .form-container {
-        padding: 16px;
-      }
-
-      input, textarea, select, button {
-        font-size: 13.5px;
-        padding: 10px;
-      }
-
-      h2 {
-        font-size: 20px;
-      }
-
-      h4 {
-        font-size: 16px;
       }
     }
   </style>
@@ -137,10 +95,11 @@
       <!-- 📷 Upload Image -->
       <label>Upload Your Photo:</label>
       <input type="file" id="imageInput" accept="image/*" name="photo">
-
+      
       <div id="crop-box" class="hidden">
         <img id="imagePreview" alt="Preview" />
         <button type="button" class="crop-btn" onclick="cropImage()">Crop & Use Photo</button>
+        <button type="button" class="crop-btn" style="background:#e74c3c" onclick="resetCrop()">Re-upload</button>
       </div>
 
       <input type="hidden" name="photo_data" id="photoData">
@@ -166,7 +125,7 @@
     </form>
   </div>
 
-  <!-- 📦 Cropper JS -->
+  <!-- 📦 CropperJS -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
   <script>
     let cropper;
@@ -182,7 +141,7 @@
       const url = URL.createObjectURL(file);
       imagePreview.src = url;
       cropBox.classList.remove('hidden');
-      photoDataInput.value = ""; // Clear previous data
+      photoDataInput.value = "";
 
       imagePreview.onload = () => {
         if (cropper) cropper.destroy();
@@ -190,31 +149,36 @@
           aspectRatio: 1,
           viewMode: 1,
           autoCropArea: 1,
-          background: false,
+          background: false
         });
       };
     });
 
     function cropImage() {
-      if (!cropper) {
-        alert("⚠️ Please upload and select an image first.");
-        return;
-      }
+      if (!cropper) return;
 
-      const canvas = cropper.getCroppedCanvas({
-        width: 300,
-        height: 300,
-      });
-
+      const canvas = cropper.getCroppedCanvas({ width: 300, height: 300 });
       const photoData = canvas.toDataURL('image/png');
       photoDataInput.value = photoData;
 
       imagePreview.src = photoData;
-      cropBox.classList.add('hidden');  // Hide crop preview after crop
+      cropBox.classList.add('hidden');
       cropper.destroy();
       cropper = null;
 
-      alert("✅ Photo cropped and set! You can re-upload to change.");
+      imageInput.disabled = true;
+    }
+
+    function resetCrop() {
+      imageInput.disabled = false;
+      photoDataInput.value = "";
+      imageInput.value = "";
+      imagePreview.src = "";
+      cropBox.classList.add('hidden');
+      if (cropper) {
+        cropper.destroy();
+        cropper = null;
+      }
     }
   </script>
 </body>
