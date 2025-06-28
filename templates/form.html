@@ -12,6 +12,7 @@
       padding: 30px;
       margin: 0;
     }
+
     .form-container {
       max-width: 600px;
       background: white;
@@ -20,15 +21,17 @@
       border-radius: 10px;
       box-shadow: 0 10px 25px rgba(0,0,0,0.1);
     }
-    h2 {
+
+    h2, h4 {
       text-align: center;
       color: #2c3e50;
     }
+
     h4 {
-      text-align: center;
       color: #3498db;
       margin-bottom: 30px;
     }
+
     input, textarea, select {
       width: 100%;
       padding: 12px;
@@ -37,6 +40,7 @@
       border-radius: 6px;
       font-size: 14px;
     }
+
     button {
       width: 100%;
       padding: 12px;
@@ -48,6 +52,7 @@
       cursor: pointer;
       transition: 0.3s ease;
     }
+
     button:hover {
       background: #1f8e4e;
     }
@@ -61,14 +66,11 @@
     #crop-box img {
       max-width: 100%;
       max-height: 300px;
-      display: none;
-      border-radius: 10px;
     }
 
     .crop-btn {
       background-color: #3498db;
       margin-top: 10px;
-      display: none;
     }
 
     .crop-btn:hover {
@@ -84,16 +86,16 @@
     <form method="POST" enctype="multipart/form-data">
       <!-- 📷 Upload Image -->
       <label>Upload Your Photo:</label>
-      <input type="file" id="imageInput" accept="image/*" required>
+      <input type="file" id="imageInput" name="photo" accept="image/*">
 
       <div id="crop-box">
         <img id="imagePreview" alt="Preview" />
       </div>
 
-      <button type="button" class="crop-btn" id="cropButton" onclick="cropImage()">Crop & Use Photo</button>
+      <button type="button" class="crop-btn" onclick="cropImage()">Crop & Use Photo</button>
       <input type="hidden" name="photo_data" id="photoData">
 
-      <!-- Other Fields -->
+      <!-- 🔽 Other Fields -->
       <input type="text" name="name" placeholder="Full Name" required>
       <input type="email" name="email" placeholder="Email" required>
       <input type="text" name="phone" placeholder="Phone" required>
@@ -114,23 +116,18 @@
     </form>
   </div>
 
-  <!-- CropperJS -->
+  <!-- 📦 Cropper JS -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
   <script>
     let cropper;
-
     const imageInput = document.getElementById('imageInput');
     const imagePreview = document.getElementById('imagePreview');
-    const cropBtn = document.getElementById('cropButton');
 
     imageInput.addEventListener('change', function (e) {
       const file = e.target.files[0];
       if (!file) return;
-
       const url = URL.createObjectURL(file);
       imagePreview.src = url;
-      imagePreview.style.display = 'block';
-      cropBtn.style.display = 'inline-block';
 
       imagePreview.onload = () => {
         if (cropper) cropper.destroy();
@@ -143,14 +140,14 @@
     });
 
     function cropImage() {
-      const canvas = cropper.getCroppedCanvas({
-        width: 300,
-        height: 300,
-      });
+      if (!cropper) {
+        alert("⚠️ Please select a photo first.");
+        return;
+      }
+      const canvas = cropper.getCroppedCanvas({ width: 300, height: 300 });
       const photoData = canvas.toDataURL('image/png');
       document.getElementById('photoData').value = photoData;
-
-      alert("✅ Photo cropped and added!");
+      alert("✅ Photo cropped and ready!");
     }
   </script>
 </body>
