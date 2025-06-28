@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Modern Resume</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style3.css') }}">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+</head>
+<body>
+
+  <!-- A4 Sized Resume Box -->
+  <div class="resume-box" id="resume-content">
+
+    <!-- Profile Image -->
+    {% if data.photo %}
+    <div class="profile-photo">
+      <img src="{{ url_for('static', filename='uploads/' + data.photo) }}" alt="Profile Photo">
+    </div>
+    {% endif %}
+
+    <!-- Basic Info -->
+    <h1>{{ data.name }}</h1>
+    <p><strong>Email:</strong> {{ data.email }}</p>
+    <p><strong>Phone:</strong> {{ data.phone }}</p>
+    <p><strong>Address:</strong> {{ data.address }}</p>
+    <hr>
+
+    <!-- About Me -->
+    <div class="section">
+      <h2>About Me</h2>
+      <p>{{ data.about }}</p>
+    </div>
+
+    <!-- Skills -->
+    <div class="section">
+      <h2>Skills</h2>
+      <ul>
+        {% for skill in data.skills.split(',') %}
+          <li>{{ skill.strip() }}</li>
+        {% endfor %}
+      </ul>
+    </div>
+
+    <!-- Education -->
+    <div class="section">
+      <h2>Education</h2>
+      <p>{{ data.education }}</p>
+    </div>
+
+    <!-- Experience -->
+    <div class="section">
+      <h2>Experience</h2>
+      <p>{{ data.experience }}</p>
+    </div>
+
+    <!-- Projects -->
+    <div class="section">
+      <h2>Projects</h2>
+      <p>{{ data.projects }}</p>
+    </div>
+
+  </div>
+
+  <!-- Download Button (Outside) -->
+  <div class="download-btn" id="download-btn">
+    <button onclick="downloadResume()">
+      <i class="fas fa-download"></i> Download as Image
+    </button>
+  </div>
+
+  <!-- Download Script -->
+<script>
+  function downloadResume() {
+    const resume = document.getElementById("resume-content");
+    const button = document.getElementById("download-btn");
+
+    button.style.display = "none";  // Hide button before capture
+
+    html2canvas(resume, {
+      scale: 2,                     // High resolution
+      useCORS: true,                // For external images
+      scrollY: -window.scrollY,     // Capture full visible area
+      backgroundColor: null         // Optional: transparent background
+    }).then(canvas => {
+      let link = document.createElement('a');
+      link.download = 'resume.png';
+      link.href = canvas.toDataURL("image/png");
+      link.click();
+
+      button.style.display = "block";  // Show button again
+    });
+  }
+</script>
+
+</body>
+</html>
