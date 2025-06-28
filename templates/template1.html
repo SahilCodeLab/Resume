@@ -1,44 +1,46 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Resume</title>
+  <meta charset="UTF-8">
+  <title>My Resume</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
 <body>
-  <div class="resume-container">
+
+<div class="container">
+  <div id="resume-content" class="resume-box">
     <h1>{{ data.name }}</h1>
-    <p>Email: {{ data.email }}</p>
-    <p>Phone: {{ data.phone }}</p>
-    <p>Address: {{ data.address }}</p>
-
-    <div class="section">
-      <h2>About Me</h2>
-      <p>{{ data.about }}</p>
-    </div>
-
-    <div class="section">
-      <h2>Skills</h2>
-      <ul>
-        {% for skill in data.skills.split(',') %}
-          <li>{{ skill.strip() }}</li>
-        {% endfor %}
-      </ul>
-    </div>
-
-    <div class="section">
-      <h2>Education</h2>
-      <p>{{ data.education }}</p>
-    </div>
-
-    <div class="section">
-      <h2>Experience</h2>
-      <p>{{ data.experience }}</p>
-    </div>
-
-    <div class="section">
-      <h2>Projects</h2>
-      <p>{{ data.projects }}</p>
-    </div>
+    <p><strong>Email:</strong> {{ data.email }}</p>
+    <p><strong>Phone:</strong> {{ data.phone }}</p>
+    <p><strong>Address:</strong> {{ data.address }}</p>
+    <hr>
+    <h2>About Me</h2>
+    <p>{{ data.about }}</p>
+    <h2>Skills</h2>
+    <p>{{ data.skills }}</p>
+    <h2>Education</h2>
+    <p>{{ data.education }}</p>
+    <h2>Experience</h2>
+    <p>{{ data.experience }}</p>
+    <h2>Projects</h2>
+    <p>{{ data.projects }}</p>
   </div>
+
+  <button onclick="downloadResume()">⬇️ Download as Image</button>
+</div>
+
+<script>
+  function downloadResume() {
+    const resume = document.getElementById("resume-content");
+    html2canvas(resume).then(canvas => {
+      let link = document.createElement('a');
+      link.download = 'resume.png';
+      link.href = canvas.toDataURL();
+      link.click();
+    });
+  }
+</script>
+
 </body>
 </html>
