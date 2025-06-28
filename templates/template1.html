@@ -2,32 +2,50 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>My Resume</title>
+  <title>{{ data.name }} - Resume</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
 <body>
 
 <div class="container">
   <div id="resume-content" class="resume-box">
+
+    {% if data.photo %}
+    <div class="profile-photo">
+      <img src="{{ url_for('static', filename='uploads/' + data.photo) }}" alt="Profile Photo">
+    </div>
+    {% endif %}
+
     <h1>{{ data.name }}</h1>
     <p><strong>Email:</strong> {{ data.email }}</p>
     <p><strong>Phone:</strong> {{ data.phone }}</p>
     <p><strong>Address:</strong> {{ data.address }}</p>
+
     <hr>
+
     <h2>About Me</h2>
     <p>{{ data.about }}</p>
+
     <h2>Skills</h2>
     <p>{{ data.skills }}</p>
+
     <h2>Education</h2>
     <p>{{ data.education }}</p>
+
     <h2>Experience</h2>
     <p>{{ data.experience }}</p>
+
     <h2>Projects</h2>
     <p>{{ data.projects }}</p>
   </div>
 
-  <button onclick="downloadResume()">⬇️ Download as Image</button>
+  <div class="download-btn">
+    <button onclick="downloadResume()">
+      <i class="fas fa-download"></i> Download as Image
+    </button>
+  </div>
 </div>
 
 <script>
